@@ -36,59 +36,82 @@ def apply_opacity(logo, opacity_val):
 # PAGE CONFIG
 # =========================
 st.set_page_config(
-    page_title="Watermark Tool Pro",
+    page_title="Tool Pro",
     layout="wide"
 )
 
 # =========================
-# CUSTOM CSS (FINAL FIX)
+# CUSTOM CSS (FIX TRÌNH ĐƠN & UPLOAD)
 # =========================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 
-/* FONT CHUAN */
+/* GLOBAL */
 html, body, [data-testid="stAppViewContainer"], .stApp {
     font-family: 'Montserrat', sans-serif !important;
     background-color: #0b0c10 !important;
 }
 
-/* FIX LOI UPLOAD (AN CHU DE NHAU) */
-[data-testid="stFileUploader"] section { padding: 15px !important; }
-[data-testid="stFileUploader"] section button { display: none !important; }
-[data-testid="stFileUploader"] section::before {
-    content: "📁 Kéo thả hoặc Click để chọn file";
-    display: block; text-align: center; color: white;
-    padding: 10px; border: 1px dashed rgba(255,255,255,0.3); border-radius: 10px;
-}
-[data-testid="stFileUploaderDropzoneInstructions"] { display: none !important; }
-
-/* SLIDER MAU TRANG */
-div[data-baseweb="slider"] > div > div { background: rgba(255, 255, 255, 0.2) !important; }
-div[data-baseweb="slider"] > div > div > div > div { background: #ffffff !important; }
-div[role="slider"] { background-color: #ffffff !important; border: 2px solid #ffffff !important; }
-div[data-testid="stThumbValue"] { color: #ffffff !important; font-family: 'Montserrat' !important; }
-
-/* FIX MENU 3 CHAM VA THEME ICONS */
-/* Khong an div tong de tranh mat Menu */
-header[data-testid="stHeader"] { background: transparent !important; }
-
-/* An chu loi trong Popover nhung khong lam mat Popover */
-div[data-baseweb="popover"] ul li button span {
-    display: none !important; /* An ca icon va text loi */
-}
-
-/* Tao Icon Emoji moi cho tung nut */
-div[data-baseweb="popover"] ul li:nth-child(1) button::before { content: "🖥️ System"; color: white; }
-div[data-baseweb="popover"] ul li:nth-child(2) button::before { content: "☀️ Light"; color: white; }
-div[data-baseweb="popover"] ul li:nth-child(3) button::before { content: "🌙 Dark"; color: white; }
-
-/* Xoa dong tieu de bi loi "contrast/light_mode" */
-div[data-baseweb="popover"] div[role="presentation"] > div:first-child {
+/* --- FIX LỖI MENU 3 CHẤM (THEME POPUP) --- */
+/* Ẩn các icon dạng text bị lỗi (light_mode, dark_mode...) */
+[data-baseweb="popover"] ul li button span:first-child,
+[data-baseweb="popover"] div[role="presentation"] > div:first-child {
     display: none !important;
 }
 
-/* Giao dien Card */
+/* Hiển thị lại text System/Light/Dark chuẩn font Montserrat */
+[data-baseweb="popover"] ul li button span:last-child {
+    display: block !important;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px !important;
+    color: white !important;
+}
+
+/* Thêm icon Emoji mới thay thế icon lỗi */
+[data-baseweb="popover"] ul li:nth-child(1) button::before { content: "🖥️ "; margin-right: 10px; }
+[data-baseweb="popover"] ul li:nth-child(2) button::before { content: "☀️ "; margin-right: 10px; }
+[data-baseweb="popover"] ul li:nth-child(3) button::before { content: "🌙 "; margin-right: 10px; }
+
+/* Căn chỉnh lại menu popup */
+[data-baseweb="popover"] ul li button {
+    padding: 12px 20px !important;
+    justify-content: flex-start !important;
+}
+
+/* --- FIX LỖI UPLOAD ĐÈ CHỮ --- */
+[data-testid="stFileUploader"] section { 
+    padding: 15px !important; 
+}
+/* Ẩn triệt để nút gốc và text gốc của Streamlit */
+[data-testid="stFileUploader"] section button, 
+[data-testid="stFileUploader"] section span { 
+    display: none !important; 
+}
+/* Tạo lớp phủ mới sạch sẽ */
+[data-testid="stFileUploader"] section::before {
+    content: "📁 Kéo thả hoặc Click để chọn file";
+    display: block;
+    text-align: center;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 20px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+[data-testid="stFileUploaderDropzoneInstructions"] { 
+    display: none !important; 
+}
+
+/* SLIDER TRẮNG */
+div[data-baseweb="slider"] > div > div { background: rgba(255, 255, 255, 0.2) !important; }
+div[data-baseweb="slider"] > div > div > div > div { background: #ffffff !important; }
+div[role="slider"] { background-color: #ffffff !important; border: 2px solid #ffffff !important; }
+div[data-testid="stThumbValue"] { color: #ffffff !important; }
+
+/* GLASS CARD */
 .glass-card {
     background: #12131c;
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -96,8 +119,6 @@ div[data-baseweb="popover"] div[role="presentation"] > div:first-child {
     padding: 24px;
     margin-bottom: 24px;
 }
-
-/* Nut bam */
 .stButton > button {
     width: 100%; height: 50px;
     border: 1px solid #ffffff; border-radius: 12px;
@@ -109,9 +130,9 @@ div[data-baseweb="popover"] div[role="presentation"] > div:first-child {
 """, unsafe_allow_html=True)
 
 # =========================
-# UI LAYOUT
+# TOP CONTROL PANEL
 # =========================
-st.title("Watermark Tool Pro")
+st.title("Tool Pro")
 
 st.markdown('<div class="glass-card">', unsafe_allow_html=True)
 top1, top2, top3 = st.columns([1, 1, 1])
@@ -130,24 +151,23 @@ with top2:
 
 with top3:
     st.subheader("Settings")
-    opacity = st.slider("Opacity (%)", 0, 100, 100, 5)
+    opacity = st.slider("Opacity (%)", 0, 100, 100, 5, key="opc")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================
-# PREVIEW & PROCESS
+# MAIN CONTENT
 # =========================
 st.markdown('<div class="glass-card">', unsafe_allow_html=True)
 col1, col2 = st.columns([1, 2])
 
 with col1:
-    st.write("### Preview")
     pv_w, pv_h = 1000, 650
-    canvas = Image.new("RGBA", (pv_w, pv_h), (30, 30, 30, 255))
+    canvas = Image.new("RGBA", (pv_w, pv_h), (35, 35, 35, 255))
     ss_pv = min(pv_w, pv_h)
 
     if logo_l_file:
         l_img = Image.open(logo_l_file).convert("RGBA")
-        sz = size_l_ovr if size_l_ovr > 0 else 15
+        sz = size_l_ovr if size_l_ovr > 0 else 10
         pd = pad_l_ovr if pad_l_ovr > 0 else 5
         l_img = resize_logo(l_img, int(ss_pv * sz / 100))
         l_img = apply_opacity(l_img, opacity)
@@ -155,7 +175,7 @@ with col1:
 
     if logo_r_file:
         r_img = Image.open(logo_r_file).convert("RGBA")
-        sz = size_r_ovr if size_r_ovr > 0 else 15
+        sz = size_r_ovr if size_r_ovr > 0 else 10
         pd = pad_r_ovr if pad_r_ovr > 0 else 5
         r_img = resize_logo(r_img, int(ss_pv * sz / 100))
         r_img = apply_opacity(r_img, opacity)
@@ -164,12 +184,12 @@ with col1:
     st.image(canvas, use_container_width=True)
 
 with col2:
-    st.write("### Xử lý hàng loạt")
-    imgs = st.file_uploader("Chọn ảnh gốc", type=['jpg','png','jpeg'], accept_multiple_files=True)
+    st.header("Xử lý hàng loạt")
+    imgs = st.file_uploader("Chọn ảnh cần đóng dấu", type=['jpg','png','jpeg','webp'], accept_multiple_files=True, key="bulk")
     
     if st.button("🚀 Bắt đầu xử lý") and imgs:
         if not logo_l_file and not logo_r_file:
-            st.error("Cần ít nhất 1 logo!")
+            st.error("Bạn phải upload ít nhất 1 logo!")
         else:
             zip_buf = BytesIO()
             bar = st.progress(0)
@@ -177,31 +197,32 @@ with col2:
             r_orig = Image.open(logo_r_file).convert("RGBA") if logo_r_file else None
 
             with zipfile.ZipFile(zip_buf, "a", zipfile.ZIP_DEFLATED) as zf:
-                for i, f in enumerate(imgs):
+                for idx, f in enumerate(imgs):
                     img = ImageOps.exif_transpose(Image.open(f)).convert("RGBA")
                     w, h = img.size
                     ss = min(w, h)
-                    _, p_def, pad_def = get_resolution_params(ss)
+                    tier, p_def, pad_def = get_resolution_params(ss)
                     
-                    # Process Logo 1
                     if l_orig:
-                        s_l = size_l_ovr if size_l_ovr > 0 else p_def
-                        p_l = pad_l_ovr if pad_l_ovr > 0 else pad_def
-                        li = apply_opacity(resize_logo(l_orig, int(ss * s_l / 100)), opacity)
-                        img.paste(li, (int(w*p_l/100), int(h*p_l/100)), mask=li)
+                        sl = size_l_ovr if size_l_ovr > 0 else p_def
+                        pl = pad_l_ovr if pad_l_ovr > 0 else pad_def
+                        li = apply_opacity(resize_logo(l_orig, int(ss * sl / 100)), opacity)
+                        img.paste(li, (int(w*pl/100), int(h*pl/100)), mask=li)
                     
-                    # Process Logo 2
                     if r_orig:
-                        s_r = size_r_ovr if size_r_ovr > 0 else p_def
-                        p_r = pad_r_ovr if pad_r_ovr > 0 else pad_def
-                        ri = apply_opacity(resize_logo(r_orig, int(ss * s_r / 100)), opacity)
-                        img.paste(ri, (w - ri.width - int(w*p_r/100), int(h*p_r/100)), mask=ri)
+                        sr = size_r_ovr if size_r_ovr > 0 else p_def
+                        pr = pad_r_ovr if pad_r_ovr > 0 else pad_def
+                        ri = apply_opacity(resize_logo(r_orig, int(ss * sr / 100)), opacity)
+                        img.paste(ri, (w - ri.width - int(w*pr/100), int(h*pr/100)), mask=ri)
 
                     ob = BytesIO()
-                    img.convert("RGB").save(ob, format="JPEG", quality=90)
+                    ext = f.name.split('.')[-1].upper()
+                    fmt = 'JPEG' if ext in ['JPG', 'JPEG'] else 'PNG'
+                    img.convert("RGB").save(ob, format=fmt, quality=95)
                     zf.writestr(f.name, ob.getvalue())
-                    bar.progress((i+1)/len(imgs))
+                    bar.progress((idx + 1) / len(imgs))
             
-            st.success("Xong!")
-            st.download_button("📥 Tải ZIP", zip_buf.getvalue(), "watermarked.zip")
+            st.success("Đã xử lý xong!")
+            st.download_button("📥 Tải về file ZIP", zip_buf.getvalue(), "images_watermarked.zip")
+
 st.markdown('</div>', unsafe_allow_html=True)
