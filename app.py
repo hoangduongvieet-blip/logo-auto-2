@@ -39,7 +39,7 @@ def resize_logo(logo, target_w):
 
 def apply_opacity(logo, opacity):
 
-    if opacity >= 1.0:
+    if opacity >= 100:
         return logo
 
     r, g, b, a = logo.split()
@@ -63,137 +63,129 @@ st.set_page_config(
 )
 
 # =========================
-# CUSTOM CSS
+# CUSTOM CSS (FIXED UPLOAD ERROR)
 # =========================
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
 
-/* =========================
-BACKGROUND
-========================= */
-
-.stApp {
-
-    background:
-        radial-gradient(circle at top left, #6d28d9 0%, transparent 30%),
-        radial-gradient(circle at top right, #2563eb 0%, transparent 30%),
-        radial-gradient(circle at bottom, #0f172a 10%, #020617 70%);
-
-    color: white;
+/* GLOBAL & BACKGROUND */
+html, body, [data-testid="stAppViewContainer"], .stApp {
+    font-family: 'Montserrat', sans-serif !important;
+    background-color: #0b0c10 !important;
+    color: #ffffff !important;
 }
 
-/* =========================
-TITLE
-========================= */
-
-h1, h2, h3, h4, h5, h6, p, label {
-    color: white !important;
+h1, h2, h3, h4, h5, h6, p, label, span, small {
+    font-family: 'Montserrat', sans-serif !important;
+    color: #ffffff !important;
 }
 
-/* =========================
-GLASS CARD
-========================= */
-
+/* MINIMALIST CARD */
 .glass-card {
-
-    background: rgba(255,255,255,0.08);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
-    border: 1px solid rgba(255,255,255,0.12);
-
-    border-radius: 24px;
-
+    background: #12131c;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
     padding: 24px;
-
-    box-shadow:
-        0 8px 32px rgba(0,0,0,0.35);
-
     margin-bottom: 24px;
 }
 
 /* =========================
-UPLOAD
-========================= */
-
-[data-testid="stFileUploader"] {
-
-    background: rgba(255,255,255,0.05);
-
-    border-radius: 18px;
-
-    padding: 10px;
+   FIX LỖI CHỮ UPLOAD ĐÈ NHAU
+   ========================= */
+[data-testid="stFileUploader"] section {
+    padding: 15px !important;
 }
 
-/* =========================
-BUTTON
-========================= */
+/* Ẩn chữ "Browse files" gốc gây lỗi */
+[data-testid="stFileUploader"] section button {
+    display: none !important;
+}
 
+/* Tạo giao diện upload mới sạch sẽ hơn */
+[data-testid="stFileUploader"] section::before {
+    content: "📁 Kéo thả hoặc Click để chọn file";
+    display: block;
+    text-align: center;
+    color: #ffffff;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Ẩn dòng thông báo limit mặc định để gọn hơn */
+[data-testid="stFileUploaderDropzoneInstructions"] {
+    display: none !important;
+}
+            
+            /* Làm thanh kéo (Slider) thành màu trắng */
+div[data-baseweb="slider"] > div > div {
+    background: rgba(255, 255, 255, 0.2) !important; /* Nền thanh kéo */
+}
+
+/* Màu của phần đã kéo qua */
+div[data-baseweb="slider"] > div > div > div > div {
+    background: #ffffff !important; 
+}
+
+/* Nút tròn kéo */
+div[role="slider"] {
+    background-color: #ffffff !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0px 0px 10px rgba(255,255,255,0.3);
+}
+
+/* Số hiển thị khi đang kéo */
+div[data-testid="stThumbValue"] {
+    font-family: 'Montserrat', sans-serif !important;
+    color: #ffffff !important;
+}
+
+/* ========================= */
+
+/* MINIMALIST BUTTON */
 .stButton > button {
-
     width: 100%;
-    height: 54px;
-
-    border: none;
-    border-radius: 16px;
-
-    background: linear-gradient(
-        135deg,
-        #7c3aed,
-        #2563eb
-    );
-
-    color: white;
-
+    height: 50px;
+    border: 1px solid #ffffff;
+    border-radius: 12px;
+    background: transparent;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif !important;
     font-weight: 700;
-    font-size: 16px;
-
-    transition: 0.3s ease;
+    font-size: 15px;
+    transition: all 0.2s ease;
 }
 
 .stButton > button:hover {
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 10px 25px rgba(124,58,237,0.45);
+    background: #ffffff !important;
+    color: #0b0c10 !important;
 }
 
-/* =========================
-INPUT
-========================= */
-
+/* INPUT & SLIDER */
 [data-baseweb="input"] {
-
-    background: rgba(255,255,255,0.06);
-
-    border-radius: 14px;
+    background: #181922 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 10px !important;
 }
 
-/* =========================
-IMAGE
-========================= */
+input {
+    color: #ffffff !important;
+}
 
 img {
-    border-radius: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-/* =========================
-SLIDER
-========================= */
-
-[data-baseweb="slider"] {
-    padding-top: 10px;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
 # =========================
 # TITLE
 # =========================
-st.title("🖼️ Watermark Tool Pro")
+st.title("Tool Pro")
 
 # =========================
 # TOP CONTROL PANEL
@@ -217,17 +209,21 @@ with top1:
         type=['png']
     )
 
-    size_l_ovr = st.number_input(
-        "Size (%)",
-        value=0,
-        help="0 = Auto",
+    size_l_ovr = st.slider(
+        "Size (%)", 
+        min_value=0, 
+        max_value=100, 
+        value=0, 
+        help="0 = Auto", 
         key="size_logo_1"
     )
 
-    pad_l_ovr = st.number_input(
-        "Padding (px)",
-        value=0,
-        help="0 = Auto",
+    pad_l_ovr = st.slider(
+        "Padding (%)", 
+        min_value=0, 
+        max_value=50, 
+        value=0, 
+        help="0 = Auto", 
         key="pad_logo_1"
     )
 
@@ -243,17 +239,21 @@ with top2:
         type=['png']
     )
 
-    size_r_ovr = st.number_input(
-        "Size (%)",
-        value=0,
-        help="0 = Auto",
+    size_r_ovr = st.slider(
+        "Size (%)", 
+        min_value=0, 
+        max_value=100, 
+        value=0, 
+        help="0 = Auto", 
         key="size_logo_2"
     )
 
-    pad_r_ovr = st.number_input(
-        "Padding (px)",
-        value=0,
-        help="0 = Auto",
+    pad_r_ovr = st.slider(
+        "Padding (%)", 
+        min_value=0, 
+        max_value=50, 
+        value=0, 
+        help="0 = Auto", 
         key="pad_logo_2"
     )
 
@@ -266,10 +266,10 @@ with top3:
 
     opacity = st.slider(
         "Opacity",
-        0.0,
-        1.0,
-        1.0,
-        0.1
+        0,
+        100,
+        100,
+        10
     )
 
 st.markdown(
@@ -484,7 +484,7 @@ with col2:
                         else pct
                     )
 
-                    pad_l = (
+                    box_l = (
                         pad_l_ovr
                         if pad_l_ovr > 0
                         else pad
@@ -533,8 +533,8 @@ with col2:
                         canvas.paste(
                             l_img,
                             (
-                                pad_l,
-                                pad_l
+                                box_l,
+                                box_l
                             ),
                             mask=l_img
                         )
